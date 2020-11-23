@@ -9,14 +9,13 @@ entity ram is
 	    N: integer := 32; -- mem addr size
         M: integer := 8   -- word size
     );
-    port (CLK     : in std_logic;
-          WE      : in std_logic;
-          EN      : in std_logic;
-          RST     : in std_logic;
-          ADDRIN  : in std_logic_vector(N-1 downto 0);
-          ADDROUT : in std_logic_vector(N-1 downto 0);
-          DI      : in std_logic_vector(M-1 downto 0);
-          DO      : out std_logic_vector(M-1 downto 0));
+    port (CLK  : in std_logic;
+          WE   : in std_logic;
+          EN   : in std_logic;
+          RST  : in std_logic;
+          ADDR : in std_logic_vector(N-1 downto 0);
+          DI   : in std_logic_vector(M-1 downto 0);
+          DO   : out std_logic_vector(M-1 downto 0));
 end ram;
 
 architecture rtl of ram is
@@ -30,9 +29,9 @@ begin
         elsif CLK'event and CLK = '1' then
             if EN = '1' then
                 if WE = '1' then
-                    ramMem(conv_integer(ADDRIN)) <= DI;
+                    ramMem(conv_integer(ADDR)) <= DI;
                 end if;
-                DO <= ramMem(conv_integer(ADDROUT));
+                DO <= ramMem(conv_integer(ADDR));
             end if;
         end if;
     end process;

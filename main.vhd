@@ -69,8 +69,7 @@ begin
         EN    => ramEn,
         WE    => ramWe,
         RST   => rst,
-        ADDRIN=> ramAddroutRom,
-        ADDROUT=>ramAddroutVga,
+        ADDR  => ramAddrin,
         DI    => ramDi,
         DO    => ramDo
     );
@@ -78,12 +77,14 @@ begin
     romReader : entity work.romReader generic map (N, M) port map(
         rst   => rst,
         clk   => vgaclk,
-        bussy => ramWe,
+        bussy => readerBussy,
         addr  => ramAddroutRom,
         data  => ramDi
     );
 
     ramEn <= '1';
+    ramAddrin <= ramAddroutRom when readerBussy = '1' else ramAddroutVga;
+    ramWe <= '1' when readerBussy = '1' else '0';
 
 end rtl;
 
