@@ -1,7 +1,7 @@
 import cv2
 
 img = cv2.imread('lenna.png', cv2.IMREAD_COLOR)
-maxsize = (64, 64)
+maxsize = (32, 32)
 resizedImg = cv2.resize(img,maxsize,interpolation=cv2.INTER_AREA)
 
 filetxt = open("lenna.txt",'w')
