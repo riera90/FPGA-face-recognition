@@ -1,10 +1,12 @@
 import cv2
 
 img = cv2.imread('lenna.png', cv2.IMREAD_COLOR)
+maxsize = (64, 64)
+resizedImg = cv2.resize(img,maxsize,interpolation=cv2.INTER_AREA)
 
 filetxt = open("lenna.txt",'w')
 
-for row in img:
+for row in resizedImg:
     for pixel in row:
         R = float((float(pixel[0])/256)*7)
         G = float((float(pixel[1])/256)*7)
