@@ -2,15 +2,15 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   22:44:06 11/16/2020
+-- Create Date:   01:08:36 11/23/2020
 -- Design Name:   
--- Module Name:   C:/code/FPGA-face-recognition/testbench.vhd
+-- Module Name:   C:/code/FPGA-face-recognition/clkdivTestBench.vhd
 -- Project Name:  FPGA-face-recognition
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
 -- 
--- VHDL Test Bench Created by ISE for module: main
+-- VHDL Test Bench Created by ISE for module: clkdiv
 -- 
 -- Dependencies:
 -- 
@@ -32,36 +32,28 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY testbench IS
-END testbench;
+ENTITY clkdivTestBench IS
+END clkdivTestBench;
  
-ARCHITECTURE behavior OF testbench IS 
+ARCHITECTURE behavior OF clkdivTestBench IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT main
+    COMPONENT clkdiv
     PORT(
-         rst : IN  std_logic;
+         clkdiv : OUT  std_logic;
          clk : IN  std_logic;
-         Hsync : OUT  std_logic;
-         Vsync : OUT  std_logic;
-         vgaR : OUT  std_logic_vector(3 downto 1);
-         vgaG : OUT  std_logic_vector(3 downto 1);
-         vgaB : OUT  std_logic_vector(3 downto 2)
+         rst : IN  std_logic
         );
     END COMPONENT;
     
 
    --Inputs
-   signal rst : std_logic := '0';
    signal clk : std_logic := '0';
+   signal rst : std_logic := '0';
 
  	--Outputs
-   signal Hsync : std_logic;
-   signal Vsync : std_logic;
-   signal vgaR : std_logic_vector(3 downto 1);
-   signal vgaG : std_logic_vector(3 downto 1);
-   signal vgaB : std_logic_vector(3 downto 2);
+   signal clkdivsig : std_logic;
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
@@ -69,14 +61,10 @@ ARCHITECTURE behavior OF testbench IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: main PORT MAP (
-          rst => rst,
+   uut: clkdiv PORT MAP (
+          clkdiv => clkdivsig,
           clk => clk,
-          Hsync => Hsync,
-          Vsync => Vsync,
-          vgaR => vgaR,
-          vgaG => vgaG,
-          vgaB => vgaB
+          rst => rst
         );
 
    -- Clock process definitions
@@ -87,14 +75,13 @@ BEGIN
 		clk <= '1';
 		wait for clk_period/2;
    end process;
-	
  
 
    -- Stimulus process
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 20 ns;	
+      wait for 100 ns;	
 		rst <= '1';
       wait for clk_period*10;
 		rst <= '0';

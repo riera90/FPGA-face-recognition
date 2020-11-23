@@ -18,24 +18,27 @@ entity main is
 end main;
 
 architecture rtl of main is
+	 constant N: integer := 5; -- memsize
+	 constant M: integer := 8; -- wordsize RRRGGGBB for VGA word
+	 
     signal vgaclk : std_logic;
     signal von    : std_logic;
     signal hc     : std_logic_vector(9 downto 0);
     signal vc     : std_logic_vector(9 downto 0);
-    signal ramAddrin: std_logic_vector(4 downto 0);
-    signal ramAddroutRom: std_logic_vector(4 downto 0);
-    signal ramAddroutVga: std_logic_vector(4 downto 0);
-    signal ramDo  : std_logic_vector(7 downto 0);
-    signal ramDi  : std_logic_vector(7 downto 0);
+    signal ramAddrin: std_logic_vector(N-1 downto 0);
+    signal ramAddroutRom: std_logic_vector(N-1 downto 0);
+    signal ramAddroutVga: std_logic_vector(N-1 downto 0);
+    signal ramDo  : std_logic_vector(M-1 downto 0);
+    signal ramDi  : std_logic_vector(M-1 downto 0);
     signal ramEn  : std_logic;
     signal ramWe  : std_logic;
-    signal readerBussy: std_logic;
-
+    signal readerBussy: std_logic; 
 begin
 
     clkdiv : entity work.clkdiv port map(
         clkdiv=> vgaclk,
-        clk   => clk
+        clk   => clk,
+		rst   => rst
     );
 
     vgaDriver : entity work.vgaDriver port map(
@@ -48,7 +51,7 @@ begin
         vc    => vc
     );
 
-    vgaPainter : entity work.vgaPainter port map(
+    vgaPainter : entity work.vgaPainter generic map (N) port map(
         rst   => rst,
         clk   => vgaclk,
         von   => von,
@@ -61,40 +64,26 @@ begin
         rdata => ramDo
     );
     
-    ram : entity work.ram generic map (5, 8) port map(
+    ram : entity work.ram generic map (N, M) port map(
         CLK   => vgaclk,
         EN    => ramEn,
         WE    => ramWe,
         RST   => rst,
-        ADDR  => ramAddrin,
+        ADDRIN=> ramAddroutRom,
+        ADDROUT=>ramAddroutVga,
         DI    => ramDi,
         DO    => ramDo
     );
     
-    romReader : entity work.romReader generic map (5, 8) port map(
+    romReader : entity work.romReader generic map (N, M) port map(
         rst   => rst,
         clk   => vgaclk,
-        bussy => readerBussy,
+        bussy => ramWe,
         addr  => ramAddroutRom,
         data  => ramDi
     );
 
     ramEn <= '1';
-    ramWe <= '0';
-
-    process(vgaclk, rst)
-    begin
-        if rst = '1' then
-            
-        elsif vgaclk'event and vgaclk = '1' then
-            if readerBussy = '1' then
-                ramAddrin <= ramAddroutRom;
-                ramWe <= '1';
-            else
-                ramAddrin <= ramAddroutVga;
-            end if;
-        end if;
-    end process;
 
 end rtl;
 

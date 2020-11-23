@@ -2,15 +2,15 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   22:44:06 11/16/2020
+-- Create Date:   01:20:23 11/23/2020
 -- Design Name:   
--- Module Name:   C:/code/FPGA-face-recognition/testbench.vhd
+-- Module Name:   C:/code/FPGA-face-recognition/romreaderTestBench.vhd
 -- Project Name:  FPGA-face-recognition
 -- Target Device:  
 -- Tool versions:  
 -- Description:   
 -- 
--- VHDL Test Bench Created by ISE for module: main
+-- VHDL Test Bench Created by ISE for module: romReader
 -- 
 -- Dependencies:
 -- 
@@ -32,22 +32,20 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY testbench IS
-END testbench;
+ENTITY romreaderTestBench IS
+END romreaderTestBench;
  
-ARCHITECTURE behavior OF testbench IS 
+ARCHITECTURE behavior OF romreaderTestBench IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
  
-    COMPONENT main
+    COMPONENT romReader
     PORT(
          rst : IN  std_logic;
          clk : IN  std_logic;
-         Hsync : OUT  std_logic;
-         Vsync : OUT  std_logic;
-         vgaR : OUT  std_logic_vector(3 downto 1);
-         vgaG : OUT  std_logic_vector(3 downto 1);
-         vgaB : OUT  std_logic_vector(3 downto 2)
+         bussy : OUT  std_logic;
+         addr : OUT  std_logic_vector(4 downto 0);
+         data : OUT  std_logic_vector(7 downto 0)
         );
     END COMPONENT;
     
@@ -57,11 +55,9 @@ ARCHITECTURE behavior OF testbench IS
    signal clk : std_logic := '0';
 
  	--Outputs
-   signal Hsync : std_logic;
-   signal Vsync : std_logic;
-   signal vgaR : std_logic_vector(3 downto 1);
-   signal vgaG : std_logic_vector(3 downto 1);
-   signal vgaB : std_logic_vector(3 downto 2);
+   signal bussy : std_logic;
+   signal addr : std_logic_vector(4 downto 0);
+   signal data : std_logic_vector(7 downto 0);
 
    -- Clock period definitions
    constant clk_period : time := 10 ns;
@@ -69,14 +65,12 @@ ARCHITECTURE behavior OF testbench IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: main PORT MAP (
+   uut: romReader PORT MAP (
           rst => rst,
           clk => clk,
-          Hsync => Hsync,
-          Vsync => Vsync,
-          vgaR => vgaR,
-          vgaG => vgaG,
-          vgaB => vgaB
+          bussy => bussy,
+          addr => addr,
+          data => data
         );
 
    -- Clock process definitions
@@ -87,17 +81,17 @@ BEGIN
 		clk <= '1';
 		wait for clk_period/2;
    end process;
-	
  
 
    -- Stimulus process
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 20 ns;	
+      wait for 100 ns;	
 		rst <= '1';
       wait for clk_period*10;
 		rst <= '0';
+
       -- insert stimulus here 
 
       wait;

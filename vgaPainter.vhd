@@ -6,14 +6,17 @@ use IEEE.NUMERIC_STD.ALL;
 
 
 entity vgaPainter is
+    generic (
+	    N: integer := 32
+    );
     Port (
         rst  : in  std_logic;
         clk  : in  std_logic;
-        von  : in  std_logic;                     -- Tells whether or not its ok to display data
-        hc   : in  std_logic_vector(9 downto 0); -- horizontal counter
-        vc   : in  std_logic_vector(9 downto 0); -- vertical counter
-        rdata: in  std_logic_vector(7 downto 0);-- ram data
-        raddr: out std_logic_vector(4 downto 0);-- ram addr 
+        von  : in  std_logic;                      -- Tells whether or not its ok to display data
+        hc   : in  std_logic_vector(9 downto 0);   -- horizontal counter
+        vc   : in  std_logic_vector(9 downto 0);   -- vertical counter
+        rdata: in  std_logic_vector(7 downto 0);   -- ram data
+        raddr: out std_logic_vector(N-1 downto 0); -- ram addr 
         vgaR : out std_logic_vector(3 downto 1);
         vgaG : out std_logic_vector(3 downto 1);
         vgaB : out std_logic_vector(3 downto 2)
@@ -21,13 +24,13 @@ entity vgaPainter is
 end vgaPainter;
 
 architecture rtl of vgaPainter is
-    signal ip  : std_logic_vector(4 downto 0); -- image pointer for ram
+    signal ip  : std_logic_vector(7 downto 0); -- image pointer for ram
     signal ihc : std_logic_vector(2 downto 0); -- image horizontal counter for line
     constant hStart: std_logic_vector(9 downto 0) := "0010011000";	-- Horizontal front porch
     constant vStart: std_logic_vector(9 downto 0) := "0000110000";	-- Vertical front porch
-    constant lineWidth: std_logic_vector(2 downto 0) := "101";
-    constant imageSize: std_logic_vector(4 downto 0) := "11001";
-    
+    constant lineWidth: std_logic_vector(2 downto 0) := "101"; -- 5 x 5
+    constant imageSize: std_logic_vector(4 downto 0) := "11001"; -- 25
+
 begin
     -- the painter
     process(clk, rst)

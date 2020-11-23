@@ -141,10 +141,10 @@ NET "clk"         LOC = "B8";    # Bank = 0, Pin name = IP_L13P_0/GCLK8, Type = 
 #NET "sw<4>"       LOC = "L14";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = SW4
 #NET "sw<5>"       LOC = "L13";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = SW5
 #NET "sw<6>"       LOC = "N17";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = SW6
-NET "rst"       LOC = "R17";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = SW7
+#NET "sw<7>"       LOC = "R17";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = SW7
 
 ## Buttons
-#NET "btn<0>"      LOC = "B18";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = BTN0
+NET "rst"      LOC = "B18";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = BTN0
 #NET "btn<1>"      LOC = "D18";   # Bank = 1, Pin name = IP/VREF_1, Type = VREF,                       Sch name = BTN1
 #NET "btn<2>"      LOC = "E18";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = BTN2
 #NET "btn<3>"      LOC = "H13";   # Bank = 1, Pin name = IP, Type = INPUT,                             Sch name = BTN3

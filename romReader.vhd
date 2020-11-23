@@ -16,8 +16,8 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity romReader is
     generic (
-	    N: integer := 63;
-        M: integer := 15
+	    N: integer := 5; -- memaddrsize
+        M: integer := 8  -- wordsize
     );
     Port (
         rst   : in  std_logic;
@@ -30,30 +30,43 @@ entity romReader is
 end romReader;
 
 architecture rtl of romReader is
-    signal raw: std_logic_vector(199 downto 0) := "11100000111000001110000011100000111000001110000000000000000000000000000011100000111000000000001100011100000000111110000011100000000000000000000000000000111000001110000011100000111000001110000011100000";
-    signal dp: std_logic_vector(8 downto 0);
-    signal bussySignal: std_logic;
-    signal memp: std_logic_vector(4 downto 0);
+    signal dp: std_logic_vector(M-1 downto 0);
+    signal memp: std_logic_vector(N-1 downto 0);
+    signal firstIteration: std_logic;
+    signal memPipeline: std_logic_vector(M-1 downto 0);
+
+    signal raw: std_logic_vector(1000 downto 0);
+    constant memLength: std_logic_vector(N-1 downto 0) := "11001";
 begin
     process(clk, rst)
     begin
         
         if rst = '1' then
+			raw (1000 downto 118) <= (others => '1');
+			raw (119 downto 0) <= "000011110000111000001101000011000000101100001010000010010000100000000111000001010000010000000011000000100000000100000000";
+            bussy <= '0';
+            addr  <= (others => '0');
+            firstIteration <= '1';
             dp <= (others => '0');
             memp <= (others => '0');
         elsif clk'event and clk = '1' then
-            if memp < "11001" then
-                bussySignal <= '1';
+            if memp < memLength then
+                if firstIteration = '1' then
+                    firstIteration <= '0';
+                    dp <= (others => '0');
+                    memp <= (others => '0');
+                end if;
                 dp <= dp + 7;
                 memp <= memp + 1;
-                data <= "11111111";--raw(conv_integer(dp) downto conv_integer(dp)-7);
+                bussy <= '1';
+                data <= raw(conv_integer(dp) + 7 downto conv_integer(dp));
                 addr <= memp;
+
             else
                 data  <= (others => '0');
                 addr  <= (others => '0');
-                bussySignal <= '0';
+                bussy <= '0';
             end if;
         end if;
     end process;
-
 end rtl;
