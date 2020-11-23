@@ -36,7 +36,7 @@ architecture rtl of romReader is
     signal memPipeline: std_logic_vector(M-1 downto 0);
 
     signal raw: std_logic_vector(1000 downto 0);
-    constant memLength: std_logic_vector(N-1 downto 0) := "11001";
+    constant memLength: std_logic_vector(N-1 downto 0) := "10001";
 begin
     process(clk, rst)
     begin
