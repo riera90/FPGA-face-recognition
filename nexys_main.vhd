@@ -5,7 +5,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 
-entity main is
+entity nexys_main is
     Port (
         rst	 : in  std_logic;
         clk	 : in  std_logic;
@@ -15,10 +15,10 @@ entity main is
         vgaG : out std_logic_vector(3 downto 1);
         vgaB : out std_logic_vector(3 downto 2)
     );
-end main;
+end nexys_main;
 
-architecture rtl of main is
-	 constant N: integer := 5; -- memsize
+architecture rtl of nexys_main is
+	 constant N: integer := 8; -- memsize
 	 constant M: integer := 8; -- wordsize RRRGGGBB for VGA word
 	 
     signal vgaclk : std_logic;

@@ -25,11 +25,11 @@ end vgaPainter;
 
 architecture rtl of vgaPainter is
     signal ip  : std_logic_vector(7 downto 0); -- image pointer for ram
-    signal ihc : std_logic_vector(2 downto 0); -- image horizontal counter for line
+    signal ihc : std_logic_vector(3 downto 0); -- image horizontal counter for line
     constant hStart: std_logic_vector(9 downto 0) := "0010011000";	-- Horizontal front porch
     constant vStart: std_logic_vector(9 downto 0) := "0000110000";	-- Vertical front porch
-    constant lineWidth: std_logic_vector(2 downto 0) := "101"; -- 5 x 5
-    constant imageSize: std_logic_vector(4 downto 0) := "11001"; -- 25
+    constant lineWidth: std_logic_vector(3 downto 0) := "1111"; -- 16 x 16
+    constant imageSize: std_logic_vector(N-1 downto 0) := "11111111"; -- 256
 
 begin
     -- the painter
