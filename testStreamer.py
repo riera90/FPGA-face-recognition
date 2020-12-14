@@ -57,54 +57,44 @@ if False:
 	GPIO.output(B1, True)
 	time.sleep(1)
 
-'''
+img = cv2.imread('lenna.png', cv2.IMREAD_COLOR)
+resized = cv2.resize(img, (16, 16) ,interpolation=cv2.INTER_AREA)
+
 while(True): 
-	ret, frame = vid.read()
-	if ret:
-		resize = cv2.resize(frame, (128, 128), interpolation=cv2.INTER_AREA)
-		cv2.imshow('frame', frame) 
+	cv2.imshow('frame', resized) 
 	if cv2.waitKey(1) & 0xFF == ord('q'): 
 		break
-'''
 
 while(True): 
-	
-	# Capture the video frame 
-	# by frame 
-
-	ret, frame = vid.read()
 	GPIO.output(SYNCF,True)
-
-	if ret:
-		resize = cv2.resize(frame, (128, 128), interpolation=cv2.INTER_AREA)
-		counter += 1
-		p = 0
-		for row in resize:
-			for pixel in row:
-				p += 1
-				R = int((float(pixel[0])/256)*7)
-				G = int((float(pixel[1])/256)*7)
-				B = int((float(pixel[2])/256)*3)
-				GPIO.output(SYNCP,False)
-				GPIO.output(R0, R & 0x1)
-				GPIO.output(R1, R & 0x10)
-				GPIO.output(R2, R & 0x001)
-				GPIO.output(G0, G & 0x1)
-				GPIO.output(G1, G & 0x10)
-				GPIO.output(G2, G & 0x001)
-				GPIO.output(B0, B & 0x1)
-				GPIO.output(B1, B & 0x10)
-				GPIO.output(SYNCP,True)
-				sys.stdout.write("{}{}{}{}{}{}{}{}\t".format(R & 0x1, R & 0x10, R & 0x001, G & 0x1, G & 0x10, G & 0x001, B & 0x1, B & 0x10))
-				if p % 10 == 0:
-					sys.stdout.write("\n")
-			sys.stdout.write("\n")
+	counter += 1
+	p = 0
+	for row in resized:
+		for pixel in row:
+			p += 1
+			R = int((float(pixel[0])/256)*7)
+			G = int((float(pixel[1])/256)*7)
+			B = int((float(pixel[2])/256)*3)
+			GPIO.output(SYNCP,False)
+			GPIO.output(R0, R & 0x1)
+			GPIO.output(R1, R & 0x10)
+			GPIO.output(R2, R & 0x001)
+			GPIO.output(G0, G & 0x1)
+			GPIO.output(G1, G & 0x10)
+			GPIO.output(G2, G & 0x001)
+			GPIO.output(B0, B & 0x1)
+			GPIO.output(B1, B & 0x10)
+			GPIO.output(SYNCP,True)
+			'''sys.stdout.write("{}{}{}{}{}{}{}{}\t".format(R & 0x1, R & 0x10, R & 0x001, G & 0x1, G & 0x10, G & 0x001, B & 0x1, B & 0x10))
+			if p % 10 == 0:
+				sys.stdout.write("\n")
 		sys.stdout.write("\n")
-		GPIO.output(SYNCF,False)
-		print("frarme: {}\tshape: {}".format(counter, resize.shape))
-		time.sleep(1)
+	sys.stdout.write("\n")'''
+	GPIO.output(SYNCF,False)
+	print("frarme: {}\tshape: {}".format(counter, resized.shape))
+	if cv2.waitKey(1) & 0xFF == ord('q'): 
+		break
+	
 
-# After the loop release the cap object 
-vid.release() 
 # Destroy all the windows 
 cv2.destroyAllWindows() 

@@ -105,29 +105,29 @@ NET "clk"         LOC = "B8";    # Bank = 0, Pin name = IP_L13P_0/GCLK8, Type = 
 #NET "MemDB<15>"   LOC = "T1";    # Bank = 3, Pin name = IO_L24N_3, Type = I/O,                        Sch name = DB15
 
 ## 7 segment display
-#NET "seg<0>"      LOC = "L18";   # Bank = 1, Pin name = IO_L10P_1, Type = I/O,                        Sch name = CA
-#NET "seg<1>"      LOC = "F18";   # Bank = 1, Pin name = IO_L19P_1, Type = I/O,                        Sch name = CB
-#NET "seg<2>"      LOC = "D17";   # Bank = 1, Pin name = IO_L23P_1/HDC, Type = DUAL,                   Sch name = CC
-#NET "seg<3>"      LOC = "D16";   # Bank = 1, Pin name = IO_L23N_1/LDC0, Type = DUAL,                  Sch name = CD
-#NET "seg<4>"      LOC = "G14";   # Bank = 1, Pin name = IO_L20P_1, Type = I/O,                        Sch name = CE
-#NET "seg<5>"      LOC = "J17";   # Bank = 1, Pin name = IO_L13P_1/A6/RHCLK4/IRDY1, Type = RHCLK/DUAL, Sch name = CF
-#NET "seg<6>"      LOC = "H14";   # Bank = 1, Pin name = IO_L17P_1, Type = I/O,                        Sch name = CG
-#NET "dp"          LOC = "C17";   # Bank = 1, Pin name = IO_L24N_1/LDC2, Type = DUAL,                  Sch name = DP
+NET "seg<0>"      LOC = "L18";   # Bank = 1, Pin name = IO_L10P_1, Type = I/O,                        Sch name = CA
+NET "seg<1>"      LOC = "F18";   # Bank = 1, Pin name = IO_L19P_1, Type = I/O,                        Sch name = CB
+NET "seg<2>"      LOC = "D17";   # Bank = 1, Pin name = IO_L23P_1/HDC, Type = DUAL,                   Sch name = CC
+NET "seg<3>"      LOC = "D16";   # Bank = 1, Pin name = IO_L23N_1/LDC0, Type = DUAL,                  Sch name = CD
+NET "seg<4>"      LOC = "G14";   # Bank = 1, Pin name = IO_L20P_1, Type = I/O,                        Sch name = CE
+NET "seg<5>"      LOC = "J17";   # Bank = 1, Pin name = IO_L13P_1/A6/RHCLK4/IRDY1, Type = RHCLK/DUAL, Sch name = CF
+NET "seg<6>"      LOC = "H14";   # Bank = 1, Pin name = IO_L17P_1, Type = I/O,                        Sch name = CG
+NET "seg<7>"      LOC = "C17";   # Bank = 1, Pin name = IO_L24N_1/LDC2, Type = DUAL,                  Sch name = DP
 
-#NET "an<0>"       LOC = "F17";   # Bank = 1, Pin name = IO_L19N_1, Type = I/O,                        Sch name = AN0
-#NET "an<1>"       LOC = "H17";   # Bank = 1, Pin name = IO_L16N_1/A0, Type = DUAL,                    Sch name = AN1
-#NET "an<2>"       LOC = "C18";   # Bank = 1, Pin name = IO_L24P_1/LDC1, Type = DUAL,                  Sch name = AN2
-#NET "an<3>"       LOC = "F15";   # Bank = 1, Pin name = IO_L21P_1, Type = I/O,                        Sch name = AN3
+NET "an<0>"       LOC = "F17";   # Bank = 1, Pin name = IO_L19N_1, Type = I/O,                        Sch name = AN0
+NET "an<1>"       LOC = "H17";   # Bank = 1, Pin name = IO_L16N_1/A0, Type = DUAL,                    Sch name = AN1
+NET "an<2>"       LOC = "C18";   # Bank = 1, Pin name = IO_L24P_1/LDC1, Type = DUAL,                  Sch name = AN2
+NET "an<3>"       LOC = "F15";   # Bank = 1, Pin name = IO_L21P_1, Type = I/O,                        Sch name = AN3
 
 ## Leds
-#NET "Led<0>"      LOC = "J14";   # Bank = 1, Pin name = IO_L14N_1/A3/RHCLK7, Type = RHCLK/DUAL,       Sch name = JD10/LD0
-#NET "Led<1>"      LOC = "J15";   # Bank = 1, Pin name = IO_L14P_1/A4/RHCLK6, Type = RHCLK/DUAL,       Sch name = JD9/LD1
-#NET "Led<2>"      LOC = "K15";   # Bank = 1, Pin name = IO_L12P_1/A8/RHCLK2, Type = RHCLK/DUAL,       Sch name = JD8/LD2
-#NET "Led<3>"      LOC = "K14";   # Bank = 1, Pin name = IO_L12N_1/A7/RHCLK3/TRDY1, Type = RHCLK/DUAL, Sch name = JD7/LD3
-#NET "Led<4>"      LOC = "E17";   # Bank = 1, Pin name = IO, Type = I/O,                               Sch name = LD4? s3e500 only
-#NET "Led<5>"      LOC = "P15";   # Bank = 1, Pin name = IO, Type = I/O,                               Sch name = LD5? s3e500 only
-#NET "Led<6>"      LOC = "F4";    # Bank = 3, Pin name = IO, Type = I/O,                               Sch name = LD6? s3e500 only
-#NET "Led<7>"      LOC = "R4";    # Bank = 3, Pin name = IO/VREF_3, Type = VREF,                       Sch name = LD7? s3e500 only
+NET "Led<0>"      LOC = "J14";   # Bank = 1, Pin name = IO_L14N_1/A3/RHCLK7, Type = RHCLK/DUAL,       Sch name = JD10/LD0
+NET "Led<1>"      LOC = "J15";   # Bank = 1, Pin name = IO_L14P_1/A4/RHCLK6, Type = RHCLK/DUAL,       Sch name = JD9/LD1
+NET "Led<2>"      LOC = "K15";   # Bank = 1, Pin name = IO_L12P_1/A8/RHCLK2, Type = RHCLK/DUAL,       Sch name = JD8/LD2
+NET "Led<3>"      LOC = "K14";   # Bank = 1, Pin name = IO_L12N_1/A7/RHCLK3/TRDY1, Type = RHCLK/DUAL, Sch name = JD7/LD3
+NET "Led<4>"      LOC = "E17";   # Bank = 1, Pin name = IO, Type = I/O,                               Sch name = LD4? s3e500 only
+NET "Led<5>"      LOC = "P15";   # Bank = 1, Pin name = IO, Type = I/O,                               Sch name = LD5? s3e500 only
+NET "Led<6>"      LOC = "F4";    # Bank = 3, Pin name = IO, Type = I/O,                               Sch name = LD6? s3e500 only
+NET "Led<7>"      LOC = "R4";    # Bank = 3, Pin name = IO/VREF_3, Type = VREF,                       Sch name = LD7? s3e500 only
 #NET "Led<4>"      LOC = "E16";   # Bank = 1, Pin name = N.C., Type = N.C.,                            Sch name = LD4? other than s3e500
 #NET "Led<5>"      LOC = "P16";   # Bank = 1, Pin name = N.C., Type = N.C.,                            Sch name = LD5? other than s3e500
 #NET "Led<6>"      LOC = "E4";    # Bank = 3, Pin name = N.C., Type = N.C.,                            Sch name = LD6? other than s3e500
@@ -210,21 +210,21 @@ NET "Vsync"       LOC = "U3";    # Bank = 2, Pin name = IO_L01P_2/CSO_B, Type = 
 
 ## 12 pin connectors
 ##JA
-#NET "JA<0>"       LOC = "L15";   # Bank = 1, Pin name = IO_L09N_1/A11, Type = DUAL,                   Sch name = JA1
-#NET "JA<1>"       LOC = "K12";   # Bank = 1, Pin name = IO_L11N_1/A9/RHCLK1, Type = RHCLK/DUAL,       Sch name = JA2
-#NET "JA<2>"       LOC = "L17";   # Bank = 1, Pin name = IO_L10N_1/VREF_1, Type = VREF,                Sch name = JA3
-#NET "JA<3>"       LOC = "M15";   # Bank = 1, Pin name = IO_L07P_1, Type = I/O,                        Sch name = JA4
-#NET "JA<4>"       LOC = "K13";   # Bank = 1, Pin name = IO_L11P_1/A10/RHCLK0, Type = RHCLK/DUAL,      Sch name = JA7
-#NET "JA<5>"       LOC = "L16";   # Bank = 1, Pin name = IO_L09P_1/A12, Type = DUAL,                   Sch name = JA8
-#NET "JA<6>"       LOC = "M14";   # Bank = 1, Pin name = IO_L05P_1, Type = I/O,                        Sch name = JA9
-#NET "JA<7>"       LOC = "M16";   # Bank = 1, Pin name = IO_L07N_1, Type = I/O,                        Sch name = JA10
+NET "PIR<3>"       LOC = "L15";   # Bank = 1, Pin name = IO_L09N_1/A11, Type = DUAL,                   Sch name = JA1
+NET "PIG<1>"       LOC = "K12";   # Bank = 1, Pin name = IO_L11N_1/A9/RHCLK1, Type = RHCLK/DUAL,       Sch name = JA2
+NET "PIG<2>"       LOC = "L17";   # Bank = 1, Pin name = IO_L10N_1/VREF_1, Type = VREF,                Sch name = JA3
+NET "PIG<3>"       LOC = "M15";   # Bank = 1, Pin name = IO_L07P_1, Type = I/O,                        Sch name = JA4
+NET "PIR<2>"       LOC = "K13";   # Bank = 1, Pin name = IO_L11P_1/A10/RHCLK0, Type = RHCLK/DUAL,      Sch name = JA7
+NET "PIR<1>"       LOC = "L16";   # Bank = 1, Pin name = IO_L09P_1/A12, Type = DUAL,                   Sch name = JA8
+NET "PIB<3>"       LOC = "M14";   # Bank = 1, Pin name = IO_L05P_1, Type = I/O,                        Sch name = JA9
+NET "PIB<2>"       LOC = "M16";   # Bank = 1, Pin name = IO_L07N_1, Type = I/O,                        Sch name = JA10
 
 ##JB
-#NET "JB<0>"       LOC = "M13";   # Bank = 1, Pin name = IO_L05N_1/VREF_1, Type = VREF,                Sch name = JB1
+NET "PISYNCP"       LOC = "M13";   # Bank = 1, Pin name = IO_L05N_1/VREF_1, Type = VREF,                Sch name = JB1
 #NET "JB<1>"       LOC = "R18";   # Bank = 1, Pin name = IO_L02P_1/A14, Type = DUAL,                   Sch name = JB2
 #NET "JB<2>"       LOC = "R15";   # Bank = 1, Pin name = IO_L03P_1, Type = I/O,                        Sch name = JB3
 #NET "JB<3>"       LOC = "T17";   # Bank = 1, Pin name = IO_L01N_1/A15, Type = DUAL,                   Sch name = JB4
-#NET "JB<4>"       LOC = "P17";   # Bank = 1, Pin name = IO_L06P_1, Type = I/O,                        Sch name = JB7
+NET "PISYNCF"       LOC = "P17";   # Bank = 1, Pin name = IO_L06P_1, Type = I/O,                        Sch name = JB7
 #NET "JB<5>"       LOC = "R16";   # Bank = 1, Pin name = IO_L03N_1/VREF_1, Type = VREF,                Sch name = JB8
 #NET "JB<6>"       LOC = "T18";   # Bank = 1, Pin name = IO_L02N_1/A13, Type = DUAL,                   Sch name = JB9
 #NET "JB<7>"       LOC = "U18";   # Bank = 1, Pin name = IO_L01P_1/A16, Type = DUAL,                   Sch name = JB10
