@@ -7,21 +7,19 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity nexys_main is
     Port (
-        rst	    : in  std_logic;
-        clk	    : in  std_logic;
+        RST	    : in  std_logic;
+        CLK	    : in  std_logic;
         Hsync   : out std_logic;
         Vsync   : out std_logic;
         vgaR    : out std_logic_vector(3 downto 1);
         vgaG    : out std_logic_vector(3 downto 1);
         vgaB    : out std_logic_vector(3 downto 2);
-        PIR     : in  std_logic_vector(3 downto 1);
-        PIG     : in  std_logic_vector(3 downto 1);
-        PIB     : in  std_logic_vector(3 downto 2);
-        PISYNCP : in  std_logic;
-        PISYNCF : in  std_logic;
+        PID     : in  std_logic_vector(7 downto 0);
+        PIS     : in  std_logic_vector(1 downto 0);
         LED     : out std_logic_vector(7 downto 0);
         SEG     : out std_logic_vector(7 downto 0);
-        AN      : out std_logic_vector(3 downto 0)
+        AN      : out std_logic_vector(3 downto 0);
+        CLKOUT  : out std_logic
     );
 end nexys_main;
 
@@ -29,7 +27,7 @@ architecture rtl of nexys_main is
 	constant N: integer := 8; -- memsize
 	constant M: integer := 8; -- wordsize RRRGGGBB for VGA word
 	 
-    signal vgaclk      : std_logic;
+    signal clk25mhz      : std_logic;
     signal von         : std_logic;
     signal hc          : std_logic_vector(9 downto 0);
     signal vc          : std_logic_vector(9 downto 0);
@@ -55,19 +53,18 @@ architecture rtl of nexys_main is
     signal writeRamDi  : std_logic_vector(M-1 downto 0);
 
     signal lastSyncFstatus: std_logic;
-
     
 begin
 
     clkdiv : entity work.clkdiv port map(
-        clkdiv=> vgaclk,
+        clkdiv=> clk25mhz,
         clk   => clk,
 		rst   => rst
     );
 
     vgaDriver : entity work.vgaDriver port map(
         rst   => rst,
-        clk   => vgaclk,
+        clk   => clk25mhz,
         Hsync => Hsync,
         Vsync => Vsync,
         von   => von,
@@ -77,7 +74,7 @@ begin
 
     vgaPainter : entity work.vgaPainter generic map (N) port map(
         rst   => rst,
-        clk   => vgaclk,
+        clk   => clk25mhz,
         von   => von,
         hc    => hc,
         vc    => vc,
@@ -87,9 +84,19 @@ begin
         raddr => readRamAddr,
         rdata => readRamDo
     );
+
+    piReader : entity work.piReader generic map (N) port map(
+        rst     => rst,
+        clk     => clk25mhz,
+        piD     => PID,
+        piS     => PIS,
+        addr    => writeRamAddr, 
+        data    => writeRamDi
+    );
+   
     
     ram0 : entity work.ram generic map (N, M) port map(
-        CLK   => vgaclk,
+        CLK   => clk25mhz,
         EN    => ram0En,
         WE    => ram0We,
         RST   => rst,
@@ -97,9 +104,8 @@ begin
         DI    => ram0Di,
         DO    => ram0Do
     );
-
     ram1 : entity work.ram generic map (N, M) port map(
-        CLK   => vgaclk,
+        CLK   => clk25mhz,
         EN    => ram1En,
         WE    => ram1We,
         RST   => rst,
@@ -107,55 +113,19 @@ begin
         DI    => ram1Di,
         DO    => ram1Do
     );
+
+
+    clkout <= clk25mhz;
+
     
-    romReader : entity work.piReader generic map (N) port map(
-        rst     => rst,
-        clk     => vgaclk,
-        piR     => PIR,
-        piG     => PIG,
-        piB     => PIB,
-        pisyncF => PISYNCF,
-        pisyncP => PISYNCP,
-        addr    => writeRamAddr, 
-        data    => writeRamDi
-    );
 
-    ram0En <= '1';
-    ram1En <= '1';
-
-    ram0Addr <= readRamAddr when readRamSel = '0' else writeRamAddr;
-    ram1Addr <= readRamAddr when readRamSel = '1' else writeRamAddr;
-    
-    ram0Do <= readRamDo       when readRamSel = '0' else (others => '0');
-    ram1Do <= (others => '0') when readRamSel = '1' else readRamDo;
-
-    ram0Di <= (others => '0') when readRamSel = '0' else writeRamDi;
-    ram1Di <= writeRamDi      when readRamSel = '1' else (others => '0');
-
-    ram0We <= not readRamSel;
-    ram1We <= readRamSel;
-
-    proc_name: process(vgaclk, rst)
-    begin
-        if rst = '1' then
-            readRamSel <= '0';
-            lastSyncFstatus <= '0';
-        elsif vgaclk'event and vgaclk = '1' then
-            if PISYNCF = '0' and lastSyncFstatus = '1' then
-                lastSyncFstatus <= '0';
-                readRamSel <= not readRamSel;
-            elsif PISYNCF = '1' and lastSyncFstatus = '0' then
-                lastSyncFstatus <= '1';
-            end if;
-        end if;
-    end process proc_name;
-
-    SEG <= pir & pig & pib;
+    --SEG <= writeRamDi;
     AN <= "0000";
-    LED(0) <= PISYNCP;
-    LED(1) <= PISYNCF;
-    LED(2) <= readRamSel;
-    LED(7 downto 3) <= (others => '0');
-   
+    led(7 downto 2) <= (others => '0');
+    LED(1 downto 0) <= PIS;
+    --LED(2) <= readRamSel;
+    --LED(7 downto 3) <= readRamDo(7 downto 3);
+    --LED(4 downto 3) <= (others => '1');-- readRamDo;
+    SEG <= (others => '1');-- readRamDo;
 end rtl;
 

@@ -16,58 +16,47 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity piReader is
     generic (
-	    N: integer := 5 -- memaddrsize
+	    N: integer := 8 -- memaddrsize
     );
     Port (
-        clk	    : in  std_logic;
-        rst	    : in  std_logic;
-        piR     : in  std_logic_vector(3 downto 1);
-        piG     : in  std_logic_vector(3 downto 1);
-        piB     : in  std_logic_vector(3 downto 2);
-        pisyncF : in  std_logic;
-        pisyncP : in  std_logic;
-        addr    : out std_logic_vector(N-1 downto 0);
-        data    : out std_logic_vector(7 downto 0)
+        CLK	    : in  std_logic;
+        RST	    : in  std_logic;
+        WE      : out std_logic;
+        EOF     : out std_logic;
+        PID     : in  std_logic_vector(N-1 downto 0);
+        PIS     : in  std_logic_vector(1 downto 0);
+        ADDR    : out std_logic_vector(N-1 downto 0);
+        DATA    : out std_logic_vector(N-1 downto 0);
     );
 
 end piReader;
 
 architecture rtl of piReader is
-    signal memp: std_logic_vector(N-1 downto 0);
-    signal firstIteration: std_logic;
-    constant memLength: std_logic_vector(N-1 downto 0) := "11111111";
-    signal lastSyncPstatus: std_logic;
+    signal addrSig : std_logic_vector(N-1 downto 0);
+    signal dataSig : std_logic_vector(N-1 downto 0);
 begin
     process(clk, rst)
     begin
-        
-        if rst = '0' then
-            lastSyncPstatus <= '0';
-            firstIteration <= '1';
-            memp <= (others => '0');
+        if rst = '1' then
+
         elsif clk'event and clk = '1' then
-            if pisyncF = '0' then
-                memp <= (others => '0');
-                lastSyncPstatus <= '0';
-                addr <= memp;
-                data  <= (others => '0');
-            elsif memp < memLength then
-                if lastSyncPstatus = '1' and pisyncP = '0' then
-                    lastSyncPstatus <= '1';
-                    if firstIteration = '1' then
-                        firstIteration <= '0';
-                        memp <= (others => '0');
-                    end if;
-                    memp <= memp + 1;
-                elsif pisyncP = '1' then
-                    lastSyncPstatus <= '1';
-                end if;
-                data <= piR & piG & piB;
-                addr <= memp;
-            else
-                data  <= (others => '0');
-                addr  <= (others => '0');
-            end if;
+            WE <= '0';
+            EOF <= '1';
+            case PIS is
+                when "10" =>
+                    addrSig <= PID;
+                when "01" =>
+                    dataSig <= PID;
+                    WE <= '1';
+                when "00" =>
+                    dataSig <= (others => '0');
+                    addrSig <= (others => '0');
+                when "11" =>
+                    EOF <= '1';
+            end case;
         end if;
     end process;
+
+    ADDR <= addrSig;
+    DATA <= dataSig;
 end rtl;

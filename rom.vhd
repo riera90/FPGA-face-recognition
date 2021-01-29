@@ -4,7 +4,7 @@ use ieee.std_logic_unsigned.all;
 
 -- N x M ram module
 
-entity ram is
+entity rom is
     generic (
 	    N: integer := 32; -- mem addr size
         M: integer := 8   -- word size
@@ -16,25 +16,24 @@ entity ram is
           ADDR : in std_logic_vector(N-1 downto 0);
           DI   : in std_logic_vector(M-1 downto 0);
           DO   : out std_logic_vector(M-1 downto 0));
-end ram;
+end rom;
 
-architecture rtl of ram is
-    type ram_type is array(2**(N-1) downto 0) of std_logic_vector(M-1 downto 0);
-    signal ramMem : ram_type;
+architecture rtl of rom is
 begin
     process (RST, CLK)
     begin
         if RST = '1' then
-            --ramMem <= (others => (others => '0'));
             DO <= (others => '0');
         elsif CLK'event and CLK = '1' then
-            if EN = '1' and  ADDR <= 2**(N-1) then
+            if EN = '1' then
                 if WE = '1' then
-                    ramMem(conv_integer(ADDR)) <= DI;
+                    DO <= (others => '0');
+                elsif  addr(7 downto 4) = "0000" or addr(7 downto 4) = "1111" or addr(3 downto 0) = "1111" then -- or addr(3 downto 0) = "0000" then 
+                    DO <= (others => '1');
+                else 
+                    DO <= (others => '0');
                 end if;
-                DO <= ramMem(conv_integer(ADDR));
             end if;
         end if;
     end process;
-
 end rtl;

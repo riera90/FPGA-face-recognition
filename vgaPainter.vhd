@@ -26,8 +26,12 @@ end vgaPainter;
 architecture rtl of vgaPainter is
     signal ip  : std_logic_vector(7 downto 0); -- image pointer for ram
     signal ihc : std_logic_vector(3 downto 0); -- image horizontal counter for line
-    constant hStart: std_logic_vector(9 downto 0) := "0010011000";	-- Horizontal front porch
-    constant vStart: std_logic_vector(9 downto 0) := "0000110000";	-- Vertical front porch
+    signal firstPixel: std_logic;
+    signal firstRow: std_logic;
+    signal rowActive: std_logic;
+    signal frameActive: std_logic;
+    constant hStart: std_logic_vector(9 downto 0) := "0010110000";	-- Horizontal front porch
+    constant vStart: std_logic_vector(9 downto 0) := "0001000000";	-- Vertical front porch
     constant lineWidth: std_logic_vector(3 downto 0) := "1111"; -- 16 x 16
     constant imageSize: std_logic_vector(N-1 downto 0) := "11111111"; -- 256
 
@@ -45,28 +49,35 @@ begin
             vgaR <= (others => '0');
             vgaG <= (others => '0');
             vgaB <= (others => '0');
+
             if hc = "0000000000" then -- start of new line
+                rowActive <= '1';
                 ihc <= (others => '0');
             end if;
             if vc = "0000000000" then -- start of new screen
+                frameActive <= '1';
                 ip <= (others => '0');
             end if;
             
-            if von='1' and hc > hStart and vc > vStart then 
-                if ihc < lineWidth and ip < imageSize then
-                    -- go to next pixel in the line
-                    ip <= ip + 1;
-                    -- add one to line pixel counter
-                    ihc <= ihc + 1;
-
-                    raddr <= ip;
-                    vgaR <= rdata(7 downto 5);
-                    vgaG <= rdata(4 downto 2);
-                    vgaB <= rdata(1 downto 0);
-                end if;                
+            if ihc = lineWidth then
+                rowActive <= '0';
             end if;
+            if ip = imageSize then
+                frameActive <= '0';
+            end if;
+
+            if von = '1' and frameActive = '1' and rowActive = '1' and hc > hStart and vc > vStart then
+                -- go to next pixel in the line
+                ip <= ip + 1;
+                -- add one to line pixel counter
+                ihc <= ihc + 1;
+                
+                vgaR <= rdata(7 downto 5);
+                vgaG <= rdata(4 downto 2);
+                vgaB <= rdata(1 downto 0);
+            end if;    
         end if;
     end process;
-
+    raddr <= ip;
 end rtl;
 
