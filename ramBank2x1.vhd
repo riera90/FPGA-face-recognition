@@ -4,7 +4,7 @@ use ieee.std_logic_unsigned.all;
 
 -- N x M ram module
 
-entity ram is
+entity ramBank2x1 is
     generic (
 	    N: integer := 32; -- mem addr size
         M: integer := 8   -- word size
@@ -16,9 +16,9 @@ entity ram is
           ADDR : in std_logic_vector(N-1 downto 0);
           DI   : in std_logic_vector(M-1 downto 0);
           DO   : out std_logic_vector(M-1 downto 0));
-end ram;
+end ramBank2x1;
 
-architecture rtl of ram is
+architecture rtl of ramBank2x1 is
     type ram_type is array(2**(N-1) downto 0) of std_logic_vector(M-1 downto 0);
     signal ramMem : ram_type;
 begin
