@@ -16,10 +16,7 @@ entity nexys_main is
         vgaB    : out std_logic_vector(3 downto 2);
         PID     : in  std_logic_vector(7 downto 0);
         PIS     : in  std_logic_vector(1 downto 0);
-        LED     : out std_logic_vector(7 downto 0);
-        SEG     : out std_logic_vector(7 downto 0);
-        AN      : out std_logic_vector(3 downto 0);
-        CLKOUT  : out std_logic
+        testProbe:out std_logic_vector(7 downto 0)
     );
 end nexys_main;
 
@@ -27,32 +24,24 @@ architecture rtl of nexys_main is
 	constant N: integer := 8; -- memsize
 	constant M: integer := 8; -- wordsize RRRGGGBB for VGA word
 	 
+
     signal clk25mhz      : std_logic;
+    
+    -- vga signals
     signal von         : std_logic;
     signal hc          : std_logic_vector(9 downto 0);
     signal vc          : std_logic_vector(9 downto 0);
 
-    signal ram0Addr    : std_logic_vector(N-1 downto 0);
-    signal ram0Do      : std_logic_vector(M-1 downto 0);
-    signal ram0Di      : std_logic_vector(M-1 downto 0);
-    signal ram0En      : std_logic;
-    signal ram0We      : std_logic;
-
-    signal ram1Addr    : std_logic_vector(N-1 downto 0);
-    signal ram1Do      : std_logic_vector(M-1 downto 0);
-    signal ram1Di      : std_logic_vector(M-1 downto 0);
-    signal ram1En      : std_logic;
-    signal ram1We      : std_logic;
-
+    -- ram signals
     signal readRamSel  : std_logic;
-
     signal readRamAddr : std_logic_vector(N-1 downto 0);
     signal readRamDo   : std_logic_vector(M-1 downto 0);
-
     signal writeRamAddr: std_logic_vector(N-1 downto 0);
     signal writeRamDi  : std_logic_vector(M-1 downto 0);
+    signal writeRamWe  : std_logic;
 
-    signal lastSyncFstatus: std_logic;
+    -- end of file signal flag
+    signal eofSig: std_logic;
     
 begin
 
@@ -86,48 +75,39 @@ begin
     );
 
     piReader : entity work.piReader generic map (N) port map(
-        rst     => rst,
-        clk     => clk25mhz,
-        piD     => PID,
-        piS     => PIS,
-        addr    => writeRamAddr, 
-        data    => writeRamDi
+        CLK	    => clk25mhz,
+        RST	    => rst,
+        WE      => writeRamWe,
+        EOF     => eofSig,
+        PID     => PID,
+        PIS     => PIS,
+        ADDR    => writeRamAddr,
+        DATA    => writeRamDi
     );
-   
-    
-    ram0 : entity work.ram generic map (N, M) port map(
+
+    ramBank2x1 : entity work.ramBank2x1 generic map (N, M) port map(
         CLK   => clk25mhz,
-        EN    => ram0En,
-        WE    => ram0We,
-        RST   => rst,
-        ADDR  => ram0Addr,
-        DI    => ram0Di,
-        DO    => ram0Do
+        EN    => '1',
+        RST   => RST,
+        SEL   => readRamSel,
+        WADDR => writeRamAddr,
+        WE    => writeRamWe,
+        RADDR => readRamAddr,
+        DI    => writeRamDi,
+        DO    => readRamDo
     );
-    ram1 : entity work.ram generic map (N, M) port map(
-        CLK   => clk25mhz,
-        EN    => ram1En,
-        WE    => ram1We,
-        RST   => rst,
-        ADDR  => ram1Addr,
-        DI    => ram1Di,
-        DO    => ram1Do
-    );
-
     
+    ramSelectorProcess : process(clk25mhz, RST)
+    begin
+        if RST = '1' then
+            readRamSel <= '0';
+        elsif clk25mhz'event and clk25mhz = '1' then
+            if eofSig = '1' then
+                readRamSel <= not readRamSel;
+            end if;
+        end if;
+    end process ;
 
-
-    clkout <= clk25mhz;
-
-    
-
-    --SEG <= writeRamDi;
-    AN <= "0000";
-    led(7 downto 2) <= (others => '0');
-    LED(1 downto 0) <= PIS;
-    --LED(2) <= readRamSel;
-    --LED(7 downto 3) <= readRamDo(7 downto 3);
-    --LED(4 downto 3) <= (others => '1');-- readRamDo;
-    SEG <= (others => '1');-- readRamDo;
+    testProbe <= readRamDo;
 end rtl;
 

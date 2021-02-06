@@ -26,14 +26,16 @@ entity piReader is
         PID     : in  std_logic_vector(N-1 downto 0);
         PIS     : in  std_logic_vector(1 downto 0);
         ADDR    : out std_logic_vector(N-1 downto 0);
-        DATA    : out std_logic_vector(N-1 downto 0);
+        DATA    : out std_logic_vector(N-1 downto 0)
     );
 
 end piReader;
 
 architecture rtl of piReader is
-    signal addrSig : std_logic_vector(N-1 downto 0);
-    signal dataSig : std_logic_vector(N-1 downto 0);
+    signal addrSig  : std_logic_vector(N-1 downto 0);
+    signal dataSig  : std_logic_vector(N-1 downto 0);
+    signal eofSignal: std_logic;
+    signal writeSignal: std_logic;
 begin
     process(clk, rst)
     begin
@@ -41,18 +43,25 @@ begin
 
         elsif clk'event and clk = '1' then
             WE <= '0';
-            EOF <= '1';
+            EOF <= '0';
             case PIS is
                 when "10" =>
                     addrSig <= PID;
                 when "01" =>
                     dataSig <= PID;
-                    WE <= '1';
+                    if writeSignal = '0' then
+                        WE <= '1';
+                        writeSignal <= '1';
+                    end if;
                 when "00" =>
-                    dataSig <= (others => '0');
-                    addrSig <= (others => '0');
+                    eofSignal <= '0';
+                    writeSignal <= '0';
                 when "11" =>
-                    EOF <= '1';
+                    if eofSignal = '0' then
+                        EOF <= '1';
+                        eofSignal <= '1';
+                    end if;
+                when others =>
             end case;
         end if;
     end process;
