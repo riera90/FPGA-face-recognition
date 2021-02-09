@@ -24,16 +24,16 @@ entity vgaPainter is
 end vgaPainter;
 
 architecture rtl of vgaPainter is
-    signal ip  : std_logic_vector(7 downto 0); -- image pointer for ram
-    signal ihc : std_logic_vector(3 downto 0); -- image horizontal counter for line
+    signal ip  : std_logic_vector(N-1 downto 0); -- image pointer for ram
+    signal ihc : std_logic_vector(5 downto 0); -- image horizontal counter for line
     signal firstPixel: std_logic;
     signal firstRow: std_logic;
     signal rowActive: std_logic;
     signal frameActive: std_logic;
     constant hStart: std_logic_vector(9 downto 0) := "0010110000";	-- Horizontal front porch
     constant vStart: std_logic_vector(9 downto 0) := "0001000000";	-- Vertical front porch
-    constant lineWidth: std_logic_vector(3 downto 0) := "1111"; -- 16 x 16
-    constant imageSize: std_logic_vector(N-1 downto 0) := "11111111"; -- 256
+    constant lineWidth: std_logic_vector(5 downto 0) := (others => '1');
+    constant imageSize: std_logic_vector(N-1 downto 0) := (others => '1');
 
 begin
     -- the painter
@@ -71,7 +71,7 @@ begin
                 ip <= ip + 1;
                 -- add one to line pixel counter
                 ihc <= ihc + 1;
-                
+
                 vgaR <= rdata(7 downto 5);
                 vgaG <= rdata(4 downto 2);
                 vgaB <= rdata(1 downto 0);

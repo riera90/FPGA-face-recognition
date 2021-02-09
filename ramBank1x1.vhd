@@ -4,7 +4,7 @@ use ieee.std_logic_unsigned.all;
 
 -- N x M ram module
 
-entity ramBank2x1 is
+entity ramBank1x1 is
     generic (
 	    N: integer := 32; -- mem addr size
         M: integer := 8   -- word size
@@ -19,23 +19,17 @@ entity ramBank2x1 is
           DI    : in std_logic_vector(M-1 downto 0); -- data in
           DO    : out std_logic_vector(M-1 downto 0) -- data out
     );
-end ramBank2x1;
+end ramBank1x1;
 
-architecture rtl of ramBank2x1 is
+architecture rtl of ramBank1x1 is
     signal ram0Addr    : std_logic_vector(N-1 downto 0);
     signal ram0Do      : std_logic_vector(M-1 downto 0);
     signal ram0Di      : std_logic_vector(M-1 downto 0);
     signal ram0En      : std_logic;
     signal ram0We      : std_logic;
-
-    signal ram1Addr    : std_logic_vector(N-1 downto 0);
-    signal ram1Do      : std_logic_vector(M-1 downto 0);
-    signal ram1Di      : std_logic_vector(M-1 downto 0);
-    signal ram1En      : std_logic;
-    signal ram1We      : std_logic;
 begin
 
-    ram0 : entity work.ram generic map (N, M) port map(
+    ram : entity work.ram generic map (N, M) port map(
         CLK   => CLK,
         EN    => EN,
         WE    => ram0We,
@@ -45,26 +39,11 @@ begin
         DO    => ram0Do
     );
 
-    ram1 : entity work.ram generic map (N, M) port map(
-        CLK   => CLK,
-        EN    => EN,
-        WE    => ram1We,
-        RST   => RST,
-        ADDR  => ram1Addr,
-        DI    => ram1Di,
-        DO    => ram1Do
-    );
-
     -- when sel is 1 read from ram0 else write on ram0
     ram0We <= '0' when SEL = '1' else WE;
     ram0Di <= (others => '0') when SEL = '1' else DI;
     ram0addr <= RADDR when SEL = '1' else WADDR;
 
-    -- when sel is 0 read from ram1 else write on ram1
-    ram1We <= '0' when SEL = '0' else WE;
-    ram1Di <= (others => '0') when SEL = '0' else DI;
-    ram1addr <= RADDR when SEL = '0' else WADDR;
-
     -- Data out selector
-    DO <= ram0Do when SEL = '1' else ram1Do;
+    DO <= ram0Do when SEL = '1' else (others => '0');
 end rtl;

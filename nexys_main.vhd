@@ -14,16 +14,15 @@ entity nexys_main is
         vgaR    : out std_logic_vector(3 downto 1);
         vgaG    : out std_logic_vector(3 downto 1);
         vgaB    : out std_logic_vector(3 downto 2);
-        PID     : in  std_logic_vector(7 downto 0);
+        PID     : in  std_logic_vector(11 downto 0);
         PIS     : in  std_logic_vector(1 downto 0);
-        testProbe:out std_logic_vector(7 downto 0)
+        probe   : out std_logic_vector(1 downto 0)
     );
 end nexys_main;
 
 architecture rtl of nexys_main is
-	constant N: integer := 8; -- memsize
-	constant M: integer := 8; -- wordsize RRRGGGBB for VGA word
-	 
+	constant N: integer := 12; -- memsize
+	constant M: integer := 8;  -- wordsize RRRGGGBB for VGA word
 
     signal clk25mhz      : std_logic;
     
@@ -74,7 +73,7 @@ begin
         rdata => readRamDo
     );
 
-    piReader : entity work.piReader generic map (N) port map(
+    piReader : entity work.piReader generic map (N, M, N) port map(
         CLK	    => clk25mhz,
         RST	    => rst,
         WE      => writeRamWe,
@@ -106,8 +105,9 @@ begin
                 readRamSel <= not readRamSel;
             end if;
         end if;
-    end process ;
+    end process;
 
-    testProbe <= readRamDo;
+    probe(0) <= readRamSel;
+    probe(1) <= eofSig;
 end rtl;
 
